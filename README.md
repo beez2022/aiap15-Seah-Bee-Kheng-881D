@@ -42,5 +42,58 @@ src:
 
 ### Individual Column Processing
 <table style="width80%">
-<tr><th>Column Name</th><th>Processing</th>
-<tr><td>Gender</td><td>encoded 0 - Male, 1 - Female</td>
+<tr><th>Column Name</th><th>Processing</th></tr>
+<tr><td>Gender</td><td>encoded 0 - Male, 1 - Female</td></tr>
+<tr><td>Date of Birth</td><td>reate column named age from the year in DOB</td></tr>
+<tr><td>Source of Traffic</td><td>removed</td></tr>
+<tr><td>Onboard Wifi Service, Onboard Dining Service, Onboard Entertainment</td><td>null, 0 - N_A, 1 - Not at all important, 2 - A little important, 3 - Somewhat important, 4 - Very important, 5 - Extremely important</td></tr>
+<tr><td>Embarkatation/Disembarkation time convenient</td><td>removed</td></tr>
+<tr><td>Ease of Online Booking</td><td>removed</td></tr>
+<tr><td>Gate location</td><td>removed</td></tr>
+<tr><td>Logging</td><td>removed</td></tr>
+<tr><td>Online Check-in, Cabin Comfort, Cabin Service, Baggage Handling, Port Check-in Service, Onboard Service, Cleanliness</td><td>changed to int8, 0 or null = 0 (indicating N_A)</td></tr>
+<tr><td>Ext_Intcode</td><td>used this column to join the 2 dataframes cruise_pre & post</td></tr>
+<tr><td>Cruise Name</td><td>categorize 0 - Blastoise, 1 - Lapras</td></tr>
+<tr><td>Ticket Type</td><td>This is the target column, removed from features during fitting and prediction 0 - standard, 1 - Deluxe, 2 - Luxury</td></tr>
+<tr><td>Cruise Distance</td><td>standardized to KM, remove rows with null cruise distance, negative values changed to positive, scale to [0,1] by minmaxscaler</td></tr>
+<tr><td>WiFi, Entertainment</td><td>null values given the value of 2 to indicate N_A</td></tr>
+<tr><td>Dining</td><td>No change</td></tr>
+
+### Choice of Models
+Models chosen are:
+- DecisionTreeClassifier from sklearn
+- LogisticRegression from sklearn
+- svm from sklearn
+In the config.yaml file, specify 'decisiontree', 'logisticregression' or 'svm' in the Algorithm key.
+DecisionTreeClassifier parameters specified in DT_parameters in dictionary format
+LogisticRegression parameters specified in LG_parameters in dictionary format
+SVM parameters specified in SVM_parameters in dictionary format
+Only those parameters listed in the config.yaml file can be changed. 
+
+#### DecisionTreeClassifier
+DecisionTreeClassifier is easy to understand and interpret, it offers explanability since 
+we are able to plot how the ML model derives at the prediction. This is preferable to other black-box methods
+
+#### SVM
+SVM classifier is flexible in that a different kernel can be chosen to delineate the data, thus is able to
+model non-linear decision. Since it is based on boundary points, it can handle outliers better.
+
+#### Logistic Regression
+Logistic Regression is chosen because of its popularity
+
+### Evaluation of Models
+The models are evaluated primarily on Precision & Recall by printing the classification report
+This checks for certain classes that may be (consistently) misclassified as another class (low precision)
+If we see many Ticket Type 0 misclassified into Ticket Type 2 - we will get low recall for Ticket Type 0
+and low precision for Ticket Type 2.
+To ensure accuracy levels are more realistic, we should use a separate test set from the train/eval data,
+so 10% of the data is taken from the cleaned data as test set. 
+
+### Other Deployment Considerations
+- Single predictions vs Batch Predictions
+- Providing endpoint for serving model
+- null handling on single inputs and inferences
+- latency and throughput
+- Provide feedback loop for necessary re-training of model with new data
+
+

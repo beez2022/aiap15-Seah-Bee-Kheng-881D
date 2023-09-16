@@ -13,6 +13,7 @@ class MLPipeline():
         f = open(cfgfile)
         x = f.read()
         j = json.loads(x)
+
         features = j['ML_Features'].split(",")
         features = [x.strip() for x in features]
         if 'Date of Birth' in features:
@@ -22,31 +23,60 @@ class MLPipeline():
             if f in list(df.columns) == False:
                 print("Error: feature ", f, "not in dataframe")
                 return
-    
+
+
         if j['Algorithm'].lower() not in ['decisiontree','logisticregression','svm']:
             print("Algorithm", j['Algorithm'], "not supported")
             return
         else:
             if j['Algorithm'].lower() == 'decisiontree':
-                self.algo = tree.DecisionTreeClassifier()
+                if 'max_depth' in list(j['DT_parameters'].keys()):
+                    self.algo = tree.DecisionTreeClassifier(max_depth=j['DT_parameters']['max_depth'])
+                else:
+                    self.algo = tree.DecisionTreeClassifier()
+
             elif j['Algorithm'].lower() == 'logisticregression':
-                self.algo = tree.LogisiticRegression()
+                if 'solver' in list(j['LG_parameters'].keys()):
+                    if 'multi_class' in list(j['LG_parameters'].keys()):
+                        self.algo = LogisticRegression(solver=j['LG_parameters']['solver'], multi_class=j['LG_parameters']['multi_class'])
+                    else:
+                        self.algo = LogisticRegression(solver=+j['LG_parameters']['solver'])
+                else:
+                    if 'multi_class' in list(j['LG_parameters'].keys()):
+                        self.algo = LogisticRegression(multi_class=j['LG_parameters']['multi_class'])
+                    else:
+                        self.algo = LogisticRegression()
+
             elif j['Algorithm'].lower() == 'svm':
-                self.algo = svm.SVC()
+                if 'kernel' in list(j['SVM_parameters'].keys()):
+                    self.algo = svm.SVC(kernel=j['SVM_parameters']['kernel'])
+                else:
+                    self.algo = svm.SVC()
 
         self.split_ratio = j['split_ratio']
+
         self.Y = df['Ticket Type']
         self.X = df[features]
+#
+# reserve a random test set (10%) first before splitting . Use the rest of 90% for train & eval
+#
+        self.X1, self.X_test, self.Y1, self.Y_test = train_test_split(self.X, self.Y, test_size=0.1, stratify=self.Y)
+        self.Y_testnp = self.Y_test.to_numpy()
 
 
     def train_test_split(self):
-        self.X_train, self.X_val, self.Y_train, self.Y_val = train_test_split(self.X, self.Y, stratify=Y)
+
+        self.X_train, self.X_val, self.Y_train, self.Y_val = train_test_split(self.X1, self.Y1, test_size=self.split_ratio, stratify=self.Y1)
         self.Y_valnp = self.Y_val.to_numpy()
     
-    def train(self, X_train, Y_train):
-        self.algo = self.algo.fit(X_train, Y_train)
+    def train(self):
+        self.algo = self.algo.fit(self.X_train, self.Y_train)
 
-    def predict(self, X_test):
-        self.result = self.algo.predict(X_test)
+    def predict(self):
+        self.predictions = self.algo.predict(self.X_test)
     
-    def classification_report(self)
+    def classification_report(self):
+        print(classification_report(self.predictions, self.Y_testnp))
+    
+    def confusion_matrix(self):
+        print(confusion_matrix(self.Y_testnp, self.predictions))

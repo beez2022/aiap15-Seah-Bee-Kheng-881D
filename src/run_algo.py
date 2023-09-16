@@ -6,12 +6,13 @@ parser = argparse.ArgumentParser()
 
 if __name__ == "__main__":
     parser.add_argument("-c", "--config_file", default="src/config.yaml", required=False, help="Config file name")
-    parser.add_argument("-d", "--db_path", default="./data", required=False, help="DB path")
+    parser.add_argument("-d", "--db_path", default="../data", required=False, help="DB path")
     args = parser.parse_args()
     
 #
 # instantiate CruiseData and clean it
 #
+    print(args.db_path)
     cruisedata = CruiseData(args.db_path)
     cruisedata.remove_cols()
     cruisedata.duplicate_handling()
@@ -19,6 +20,10 @@ if __name__ == "__main__":
     cruisedata.feature_engineering()
     cruisedata.merge_dataframes()
 
-    mlpipeline = MLPipeline(args.config_file)
+    mlpipeline = MLPipeline(args.config_file, cruisedata.df_merge)
+    mlpipeline.train_test_split()
+    mlpipeline.train()
+    mlpipeline.predict()
+    mlpipeline.classification_report()
 
     print(cruisedata.df_merge.columns)

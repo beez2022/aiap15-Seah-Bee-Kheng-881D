@@ -50,10 +50,13 @@ class CruiseData():
 #
 #  null and invalid values handling (df_pre)
 #
+        nulls_ = self.df_pre[self.df_pre['Date of Birth'].isna()].shape[0]
         self.df_pre = self.df_pre[self.df_pre['Date of Birth'].isna()==False].copy()
-        print(self.df_pre[self.df_pre['Date of Birth'].isna()].shape[0], "rows dropped from cruise_pre dataframe - Null Date of Birth")
+        print(nulls_, "rows dropped from cruise_pre dataframe - Null Date of Birth")
+
+        nulls_ = self.df_pre[self.df_pre['Gender'].isna()].shape[0]
         self.df_pre = self.df_pre[self.df_pre['Gender'].isna()==False].copy()
-        print(self.df_pre[self.df_pre['Gender'].isna()].shape[0], "rows dropped from cruise_pre dataframe - Null Gender")
+        print(nulls_, "rows dropped from cruise_pre dataframe - Null Gender")
 
         self.df_pre['YOB'] = self.df_pre.apply(lambda x: int(x['Date of Birth'].split("/")[-1]) if "/" in x['Date of Birth']
                                  else int(x['Date of Birth'].split("-")[0]), axis=1)
