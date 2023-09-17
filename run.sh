@@ -1,1 +1,1 @@
-python src/run_algo.py -c ./src/config.yaml -d ../data
+python src/run_algo.py -c ./src/config.yaml -d ./data
