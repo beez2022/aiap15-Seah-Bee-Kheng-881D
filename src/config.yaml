@@ -1,8 +1,8 @@
 {
-"Algorithm" : "logisticregression",
+"Algorithm" : "svm",
 "DT_parameters" : {"max_depth":3},
 "LG_parameters" : {"solver":"newton-cholesky", "multi_class":"auto"},
 "SVM_parameters" : {"kernel":"rbf"},
 "split_ratio" : 0.25,
-"ML_Features" : "Onboard Wifi Service, Onboard Dining Service, Onboard Entertainment, Gender,  Cabin Comfort, Cabin service, Baggage handling, Port Check-in Service, Onboard Service, Cleanliness, WiFi, Dining, Entertainment"
+"ML_Features" : "Onboard Wifi Service, Onboard Dining Service, Onboard Entertainment, Gender,  Date of Birth, Cabin Comfort, Cabin service, Baggage handling, Port Check-in Service, Onboard Service, Cleanliness, Cruise Distance, Cruise Name, WiFi, Dining, Entertainment"
 }
