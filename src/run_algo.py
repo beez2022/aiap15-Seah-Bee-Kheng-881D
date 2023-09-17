@@ -24,11 +24,8 @@ if __name__ == "__main__":
     mlpipeline.train()
     mlpipeline.predict()
     print("\n")
-    print("Confusion Matrix")
-    print("-"*16)
+    print("Confusion Matrix & Metrics - ", mlpipeline.Algorithm)
+    print("-"*45)
     mlpipeline.confusion_matrix()
-    print("\n")
-    print("Accuracy Metrics")
-    print("-"*16)
     mlpipeline.classification_report()
     

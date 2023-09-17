@@ -24,34 +24,84 @@ class MLPipeline():
                 print("Error: feature ", f, "not in dataframe")
                 return
 
-
         if j['Algorithm'].lower() not in ['decisiontree','logisticregression','svm']:
             print("Algorithm", j['Algorithm'], "not supported")
             return
         else:
+            self.Algorithm = j['Algorithm']
             if j['Algorithm'].lower() == 'decisiontree':
+                if 'class_weight' in list(j['DT_parameters'].keys()):
+                    if type(j['DT_parameters']['class_weight']) == dict:
+                        new_weights = {
+                                       0:j['DT_parameters']['class_weight']["0"],
+                                       1: j['DT_parameters']['class_weight']["1"],
+                                       2: j['DT_parameters']['class_weight']["2"]
+                                       }
+                    
                 if 'max_depth' in list(j['DT_parameters'].keys()):
-                    self.algo = tree.DecisionTreeClassifier(max_depth=j['DT_parameters']['max_depth'])
+                    if 'class_weight' in list(j['DT_parameters'].keys()):
+                        self.algo = tree.DecisionTreeClassifier(max_depth=j['DT_parameters']['max_depth'],
+                                                                class_weight=new_weights)
+                    else:
+                        self.algo = tree.DecisionTreeClassifier(max_depth=j['DT_parameters']['max_depth'])
                 else:
-                    self.algo = tree.DecisionTreeClassifier()
+                    if 'class_weight' in list(j['DT_parameters'].keys()):
+                        self.algo = tree.DecisionTreeClassifier(class_weight=new_weights)
+                    else:
+                        self.algo = tree.DecisionTreeClassifier()
 
             elif j['Algorithm'].lower() == 'logisticregression':
+                if 'class_weight' in list(j['LG_parameters'].keys()):
+                    if type(j['LG_parameters']['class_weight']) == dict:
+                        new_weights = {
+                                       0:j['LG_parameters']['class_weight']["0"],
+                                       1: j['LG_parameters']['class_weight']["1"],
+                                       2: j['LG_parameters']['class_weight']["2"]
+                                       }
                 if 'solver' in list(j['LG_parameters'].keys()):
                     if 'multi_class' in list(j['LG_parameters'].keys()):
-                        self.algo = LogisticRegression(solver=j['LG_parameters']['solver'], multi_class=j['LG_parameters']['multi_class'])
+                        if 'class_weight' in list(j['LG_parameters'].keys()):
+                            self.algo = LogisticRegression(solver=j['LG_parameters']['solver'], 
+                                                           multi_class=j['LG_parameters']['multi_class'],
+                                                           class_weight=new_weights)
+                        else:
+                            self.algo = LogisticRegression(solver=j['LG_parameters']['solver'], 
+                                                           multi_class=j['LG_parameters']['multi_class'])
                     else:
-                        self.algo = LogisticRegression(solver=+j['LG_parameters']['solver'])
+                        self.algo = LogisticRegression(solver=j['LG_parameters']['solver'])
                 else:
                     if 'multi_class' in list(j['LG_parameters'].keys()):
-                        self.algo = LogisticRegression(multi_class=j['LG_parameters']['multi_class'])
+                        if 'class_weight' in list(j['LG_parameters'].keys()):
+                            self.algo = LogisticRegression(multi_class=j['LG_parameters']['multi_class'],
+                                                           class_weight=new_weights)
+                        else:
+                            self.algo = LogisticRegression(multi_class=j['LG_parameters']['multi_class'])
                     else:
-                        self.algo = LogisticRegression()
+                        if 'class_weight' in list(j['LG_parameters'].keys()):
+                            self.algo = LogisticRegression(class_weight=new_weights)
+                        else:
+                            self.algo = LogisticRegression()   
+            
 
             elif j['Algorithm'].lower() == 'svm':
+                if 'class_weight' in list(j['SVM_parameters'].keys()):
+                    if type(j['SVM_parameters']['class_weight']) == dict:
+                        new_weights = {
+                                       0:j['SVM_parameters']['class_weight']["0"],
+                                       1: j['SVM_parameters']['class_weight']["1"],
+                                       2: j['SVM_parameters']['class_weight']["2"]
+                                       }
                 if 'kernel' in list(j['SVM_parameters'].keys()):
-                    self.algo = svm.SVC(kernel=j['SVM_parameters']['kernel'])
+                    if 'class_weight' in list(j['SVM_parameters'].keys()):
+                        self.algo = svm.SVC(kernel=j['SVM_parameters']['kernel'],
+                                                    class_weight=new_weights)
+                    else:
+                        self.algo = svm.SVC(kernel=j['SVM_parameters']['kernel'])
                 else:
-                    self.algo = svm.SVC()
+                    if 'class_weight' in list(j['SVM_parameters'].keys()):
+                        self.algo = svm.SVC(class_weight=new_weights)
+                    else:
+                        self.algo = svm.SVC()
 
         self.split_ratio = j['split_ratio']
 

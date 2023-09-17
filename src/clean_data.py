@@ -80,8 +80,9 @@ class CruiseData():
 #
 #  df_post
 #
+        nulls_2 = self.df_post[self.df_post['Ticket Type'].isna()].shape[0]
         self.df_post = self.df_post[self.df_post['Ticket Type'].isna()==False].copy()
-        print(self.df_post[self.df_post['Ticket Type'].isna()].shape[0],"rows dropped from cruise_post dataframe, null ticket type")
+        print(nulls_2,"rows dropped from cruise_post dataframe, null ticket type")
         self.df_post['Cruise Name'] = self.df_post.apply(lambda x: 'Blastoise' if x['Cruise Name'] in ['blastoise', 'blast0ise', 'blast'] else x['Cruise Name'], axis=1)
         self.df_post['Cruise Name'] = self.df_post.apply(lambda x: 'Lapras' if x['Cruise Name'] in ['IAPRAS', 'lapras', 'lap'] else x['Cruise Name'], axis=1)
         print("Standardized Cruise Names to Lapras and Blastoise")

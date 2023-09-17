@@ -1,8 +1,8 @@
 {
 "Algorithm" : "svm",
-"DT_parameters" : {"max_depth":3},
-"LG_parameters" : {"solver":"newton-cholesky", "multi_class":"auto"},
-"SVM_parameters" : {"kernel":"rbf"},
+"DT_parameters" : {"max_depth":3, "class_weight":{"0":1,"1":2,"2":1}},
+"LG_parameters" : {"solver":"newton-cholesky", "multi_class":"auto", "class_weight":{"0":1,"1":2,"2":1}},
+"SVM_parameters" : {"kernel":"rbf", "class_weight":{"0":1,"1":2,"2":1}},
 "split_ratio" : 0.25,
 "ML_Features" : "Onboard Wifi Service, Onboard Dining Service, Onboard Entertainment, Gender,  Date of Birth, Cabin Comfort, Cabin service, Baggage handling, Port Check-in Service, Onboard Service, Cleanliness, Cruise Distance, Cruise Name, WiFi, Dining, Entertainment"
 }
