@@ -10,7 +10,7 @@ src:
 
 
 ### executing
-- ./run.sh -c src/config.yaml -d ./data
+- ./run.sh -c src/config.yaml -d ./data   (default -c is src/config.yaml, -d ./data)
 - -c - config file full path, -d path to where cruise_pre & cruise_post reside
 - modify algorithm and features to be used in the fitting through the config file
 - 3 algorithms are supported "logisitcregression", "decisiontree", "svm"
@@ -22,7 +22,13 @@ src:
     - handles null and invalid values (e.g. year of birth in the 18xx, Cruise Distance negative and change to km)
     - feature engineering - determine age from DOB, normalize distance, bin ages, set categorical columns to numeric
 - run_algo.py calls ml_train_predict.py and does the following:
-    - 
+    - reads config.yaml as json format - contains Algorithm and parameters, features to use for fitting and prediction
+    - create a separate test dataset from the cleaned and merged data (10%)
+    - calls train_test_split to get train & eval set
+    - calls predict to make inferences on the test data set
+    - print confusion matrix
+    - print classification report (recall, precision, f1 score)
+ 
 
 
 ### EDA Summary:
@@ -58,6 +64,7 @@ src:
 <tr><td>Cruise Distance</td><td>standardized to KM, remove rows with null cruise distance, negative values changed to positive, scale to [0,1] by minmaxscaler</td></tr>
 <tr><td>WiFi, Entertainment</td><td>null values given the value of 2 to indicate N_A</td></tr>
 <tr><td>Dining</td><td>No change</td></tr>
+</table>
 
 ### Choice of Models
 Models chosen are:
@@ -92,8 +99,9 @@ so 10% of the data is taken from the cleaned data as test set.
 ### Other Deployment Considerations
 - Single predictions vs Batch Predictions
 - Providing endpoint for serving model
-- null handling on single inputs and inferences
+- More robust handling of invalid inputs
 - latency and throughput
+- Cloud or on-prem implementation
 - Provide feedback loop for necessary re-training of model with new data
 
 

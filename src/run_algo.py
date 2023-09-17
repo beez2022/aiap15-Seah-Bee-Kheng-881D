@@ -12,7 +12,6 @@ if __name__ == "__main__":
 #
 # instantiate CruiseData and clean it
 #
-    print(args.db_path)
     cruisedata = CruiseData(args.db_path)
     cruisedata.remove_cols()
     cruisedata.duplicate_handling()
@@ -24,6 +23,12 @@ if __name__ == "__main__":
     mlpipeline.train_test_split()
     mlpipeline.train()
     mlpipeline.predict()
+    print("\n")
+    print("Confusion Matrix")
+    print("-"*16)
+    mlpipeline.confusion_matrix()
+    print("\n")
+    print("Accuracy Metrics")
+    print("-"*16)
     mlpipeline.classification_report()
-
-    print(cruisedata.df_merge.columns)
+    
